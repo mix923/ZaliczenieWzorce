@@ -14,10 +14,12 @@ public class LevelGenerator : Singleton<LevelGenerator>
     [SerializeField]
     private GameObject buttonPrefab;
     private List<Color> colors = new List<Color>();
-    private Animation currentAniamtion; 
+    private Animation currentAniamtion;
+    private FactoryButton factoryButton;
 
     private void Awake()
     {
+        levelData.FactoryButton = new FactorySquareButton();
         ResetGenerator();
     }
 
@@ -62,7 +64,9 @@ public class LevelGenerator : Singleton<LevelGenerator>
         GameObject tmpButton = Instantiate(buttonPrefab,panelButtons);
 
         tmpButton.GetComponent<Image>().color = correctButton == false ? GenerateColor() : levelData.CorrectColor;
-        tmpButton.AddComponent<ButtonAnswer>().Initialize(currentAniamtion, levelData, correctButton);
+
+        Button button = levelData.FactoryButton.CreateButton();
+        tmpButton.GetComponent<ButtonAnswer>().Initialize(currentAniamtion, levelData, correctButton, button);
     }
 
     private Color GenerateColor()
